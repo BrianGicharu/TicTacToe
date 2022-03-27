@@ -9,21 +9,28 @@ import javax.swing.JOptionPane;
 import java.net.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 /**
  * @author briangicharu
  */
 public class Window extends javax.swing.JFrame {
     // Custom Variables
-    public String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
-    public boolean playerClicked = false, vsHuman = false, gameOver = false, aiPlay = true;
-    public JLabel[] gameJLabels = new JLabel[9];
-    public static int count = 1, random = 0;
+    private String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
+    private boolean playerClicked = false, vsHuman = true, gameOver = false;
+    private JLabel[] gameLabels = new JLabel[9];
+    private static int count = 1;
+    private Robot bot;
+  
     public Window() {
-        JLabel gameJLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
+        JLabel gameLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
+        try{
+            bot = new Robot();
+        }catch(AWTException ex){}
         initComponents();
     }
 
@@ -66,7 +73,7 @@ public class Window extends javax.swing.JFrame {
 
         tabsJPanel.setBackground(new java.awt.Color(204, 255, 255));
 
-        gLabel_2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_2.setOpaque(true);
         gLabel_2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -75,7 +82,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_3.setOpaque(true);
         gLabel_3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -84,7 +91,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_4.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_4.setOpaque(true);
         gLabel_4.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -93,7 +100,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_5.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_5.setOpaque(true);
         gLabel_5.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -102,7 +109,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_6.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_6.setOpaque(true);
         gLabel_6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -111,7 +118,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_7.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_7.setOpaque(true);
         gLabel_7.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -120,7 +127,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_8.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_8.setOpaque(true);
         gLabel_8.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -129,7 +136,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_1.setOpaque(true);
         gLabel_1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -138,7 +145,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        gLabel_9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        gLabel_9.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gLabel_9.setOpaque(true);
         gLabel_9.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -195,7 +202,7 @@ public class Window extends javax.swing.JFrame {
         );
 
         resetGameBtn.setBackground(new java.awt.Color(204, 0, 51));
-        resetGameBtn.setFont(new java.awt.Font("Digital-7", 0, 12)); // NOI18N
+        resetGameBtn.setFont(new java.awt.Font("Digital-7 Mono", 1, 14)); // NOI18N
         resetGameBtn.setText("RESET GAME");
         resetGameBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -213,7 +220,12 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        playerSelectorDropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Player vs Player", "Player vs AI" }));
+        playerSelectorDropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Player vs Player", "Player vs AI", "Internet MultiPlayer" }));
+        playerSelectorDropdown.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                playerSelectorDropdownItemStateChanged(evt);
+            }
+        });
 
         winnerJlabel.setBackground(new java.awt.Color(255, 204, 204));
         winnerJlabel.setFont(new java.awt.Font("Trebuchet MS", 1, 11)); // NOI18N
@@ -227,6 +239,7 @@ public class Window extends javax.swing.JFrame {
         minsLabel.setText("00");
         minsLabel.setOpaque(true);
 
+        separatorLabel01.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         separatorLabel01.setText(":");
 
         secsLabel.setBackground(new java.awt.Color(0, 0, 0));
@@ -234,6 +247,7 @@ public class Window extends javax.swing.JFrame {
         secsLabel.setText("00");
         secsLabel.setOpaque(true);
 
+        separatorLabel02.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         separatorLabel02.setText(":");
 
         msecsLabel.setBackground(new java.awt.Color(0, 0, 0));
@@ -245,7 +259,7 @@ public class Window extends javax.swing.JFrame {
 
         playerMovesHistory.setEditable(false);
         playerMovesHistory.setColumns(5);
-        playerMovesHistory.setFont(new java.awt.Font("MS Gothic", 1, 10)); // NOI18N
+        playerMovesHistory.setFont(new java.awt.Font("MS Gothic", 1, 12)); // NOI18N
         playerMovesHistory.setRows(20);
         jScrollPane1.setViewportView(playerMovesHistory);
 
@@ -345,41 +359,33 @@ public class Window extends javax.swing.JFrame {
                 if(!playerClicked) {
                     ((JLabel)evt.getSource()).setText("X");
                     ((JLabel)evt.getSource()).setBackground(Color.RED);
-                    renderTextArea();
-                    winScenario();
                     playerClicked = true;
 
                 }else if(playerClicked){
                     ((JLabel)evt.getSource()).setText("O");
                     ((JLabel)evt.getSource()).setBackground(Color.BLUE);
-                    renderTextArea();
-                    winScenario();
                     playerClicked = false;
                 }
             }else if(!vsHuman){
-                // Playing against the terminator ;-)
-                if(aiPlay){
-                    ((JLabel)evt.getSource()).setText("X");
-                    ((JLabel)evt.getSource()).setBackground(Color.RED);
-                    renderTextArea();
-                    winScenario();
-                    playerClicked = true;
-                    aiPlay = false;
-                }
-                try{
-                    if(!aiPlay) {                    
-                    //int p = );
-                    int x = randomizeIfNotEmpty(!(gameLabels[(int)(Math.floor(Math.random()*(9-1)))].getText()).isEmpty());
-                    gameLabels[x].setText("O");                    
-                    gameLabels[x].setBackground(Color.BLUE);
-                    renderTextArea();
-                    winScenario();
-                    //Thread.sleep(1000);
-                    aiPlay = true;                  
+                // human's turn
+                ((JLabel)evt.getSource()).setText("X");
+                ((JLabel)evt.getSource()).setBackground(Color.RED);            
+                // terminator's turn
+                ScheduledExecutorService sc = Executors.newSingleThreadScheduledExecutor();
+                sc.schedule (()->{
+                    if(!gameOver){
+                        int x = randomizeIfNotEmpty(gameLabels);
+                        gameLabels[x].setText("O");  
+                        gameLabels[x].setBackground(Color.BLUE);
+                        renderTextArea();
+                        winScenario();
                     }
-                }catch(Exception e){} 
+                }, 1250, TimeUnit.MILLISECONDS);
             }
-         }
+            renderTextArea();
+            winScenario();
+        }
+        
           //<editor-fold defaultstate="collapsed" desc="Coooooooooode">
 //        if(vsHuman){
 //            JLabel gameJLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
@@ -442,34 +448,57 @@ public class Window extends javax.swing.JFrame {
 //        }
         //</editor-fold>
     }//GEN-LAST:event_gLabelsClicked
+
+    private void playerSelectorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_playerSelectorDropdownItemStateChanged
+        switch (((JComboBox)evt.getSource()).getSelectedItem().toString()) {
+            case "Player vs Player":
+                vsHuman = true;
+                flushGameText();
+                break;
+            case "Player vs AI":
+                vsHuman = false;
+                flushGameText();
+                break;
+            case "Internet MultiPlayer":
+                JOptionPane.showConfirmDialog(null, 
+                        "Bingo, you're a great player\nThis feature is coming soon.\nStay tuned!",
+                        "Coming soon",JOptionPane.PLAIN_MESSAGE);
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_playerSelectorDropdownItemStateChanged
     
     // Editable methods begin here
     private void flushGameText(){
-        JLabel gameLabels[] = {gLabel_1, gLabel_2, gLabel_3, gLabel_4,gLabel_5,gLabel_6,gLabel_7, gLabel_8, gLabel_9};
+        JLabel gameLabels[] = {
+            gLabel_1, gLabel_2, gLabel_3,
+            gLabel_4, gLabel_5, gLabel_6,
+            gLabel_7, gLabel_8, gLabel_9
+        };
         for(JLabel content:gameLabels){
             content.setText("");
             content.setBackground(new Color(240,240,240));
         }
         count=0;
-        aiPlay = true;
         winnerJlabel.setText("No Winner Yet");
         winnerColorLabel.setBackground(new Color(0,255,204));
         renderTextArea();
-        playerMovesHistory.setText("_MOVES HISTORY_\n");
+        playerMovesHistory.setText(" _MOVES HISTORY_\n");
         winScenario();
     }
-    private int randomizeIfNotEmpty(boolean bool){
-        // true means the subject is not empty
-        // recursion should re-run the random num generator
-        int var = (int)(Math.floor(Math.random()*(9-1)));
-        if(bool){
-            return randomizeIfNotEmpty(false);
+    private int randomizeIfNotEmpty(JLabel[] lebo){
+        // true means the subject is not empty -- recursion should re-run the random num generator
+        int var = (int)(Math.floor(Math.random()*(9)));
+        //System.out.println("Start is ===> "+var);
+        if(!(lebo[var].getText()).isEmpty()){
+            return randomizeIfNotEmpty(lebo);
         }else{
             return var;
         }
     }
     private void renderTextArea(){
-        String move = String.format("----- %3.0f -----\n|%s|%s|%s|\n|%s|%s|%s|\n|%s|%s|%s|\n\n",
+        String move = String.format(" ----- %3.0f ------\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n\n",
             (float)count,
             gLabel_1.getText().isEmpty()?"    ":" "+gLabel_1.getText()+"  ",
             gLabel_2.getText().isEmpty()?"    ":" "+gLabel_2.getText()+"  ",
