@@ -43,17 +43,8 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="timeLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                                      <Component id="minsLabel" min="-2" pref="14" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                      <Component id="separatorLabel01" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="secsLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="separatorLabel02" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="msecsLabel" min="-2" pref="15" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
+                                      <Component id="timeDigitsLabel" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="winnerJlabel" min="-2" pref="91" max="-2" attributes="0"/>
@@ -84,15 +75,9 @@
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Component id="playerSelectorDropdown" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="secsLabel" alignment="1" min="-2" pref="14" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="timeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="minsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="separatorLabel01" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="separatorLabel02" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="msecsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="timeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="timeDigitsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
@@ -178,7 +163,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_2">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -190,7 +175,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_3">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -202,7 +187,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_4">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -214,7 +199,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_5">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -226,7 +211,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_6">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -238,7 +223,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_7">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -250,7 +235,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_8">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -262,7 +247,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -274,7 +259,7 @@
         <Component class="javax.swing.JLabel" name="gLabel_9">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="24" style="0"/>
+              <Font name="Tahoma" size="36" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="opaque" type="boolean" value="true"/>
@@ -291,7 +276,7 @@
           <Color blue="33" green="0" red="cc" type="rgb"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Digital-7" size="12" style="0"/>
+          <Font name="Digital-7 Mono" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="RESET GAME"/>
       </Properties>
@@ -317,12 +302,16 @@
     <Component class="javax.swing.JComboBox" name="playerSelectorDropdown">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
+          <StringArray count="3">
             <StringItem index="0" value="Player vs Player"/>
             <StringItem index="1" value="Player vs AI"/>
+            <StringItem index="2" value="Internet MultiPlayer"/>
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="playerSelectorDropdownItemStateChanged"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -344,49 +333,12 @@
         <Property name="text" type="java.lang.String" value="Time"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="minsLabel">
+    <Component class="javax.swing.JLabel" name="timeDigitsLabel">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="ff" red="0" type="rgb"/>
+          <Color blue="99" green="33" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
-        <Property name="opaque" type="boolean" value="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="separatorLabel01">
-      <Properties>
-        <Property name="text" type="java.lang.String" value=":"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="secsLabel">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="ff" red="99" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
-        <Property name="opaque" type="boolean" value="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="separatorLabel02">
-      <Properties>
-        <Property name="text" type="java.lang.String" value=":"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="msecsLabel">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="ff" red="99" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>
@@ -402,7 +354,7 @@
             <Property name="editable" type="boolean" value="false"/>
             <Property name="columns" type="int" value="5"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="MS Gothic" size="10" style="1"/>
+              <Font name="MS Gothic" size="12" style="1"/>
             </Property>
             <Property name="rows" type="int" value="20"/>
           </Properties>

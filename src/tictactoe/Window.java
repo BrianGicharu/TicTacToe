@@ -5,32 +5,30 @@
  */
 package tictactoe;
 
-import javax.swing.JOptionPane;
 import java.net.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.*;
+
 /**
  * @author briangicharu
  */
+
 public class Window extends javax.swing.JFrame {
     // Custom Variables
-    private String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
-    private boolean playerClicked = false, vsHuman = true, gameOver = false;
+    private final String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
+    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameStarted=false;
     private JLabel[] gameLabels = new JLabel[9];
     private static int count = 1;
-    private Robot bot;
+    private int min=0, sec =0, mSec=0;
+    private Timer stopWatch;
+    private Thread thread;
   
     public Window() {
         JLabel gameLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
-        try{
-            bot = new Robot();
-        }catch(AWTException ex){}
         initComponents();
     }
 
@@ -58,11 +56,7 @@ public class Window extends javax.swing.JFrame {
         playerSelectorDropdown = new javax.swing.JComboBox<>();
         winnerJlabel = new javax.swing.JLabel();
         timeLabel = new javax.swing.JLabel();
-        minsLabel = new javax.swing.JLabel();
-        separatorLabel01 = new javax.swing.JLabel();
-        secsLabel = new javax.swing.JLabel();
-        separatorLabel02 = new javax.swing.JLabel();
-        msecsLabel = new javax.swing.JLabel();
+        timeDigitsLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         playerMovesHistory = new javax.swing.JTextArea();
         winnerColorLabel = new javax.swing.JLabel();
@@ -234,26 +228,9 @@ public class Window extends javax.swing.JFrame {
 
         timeLabel.setText("Time");
 
-        minsLabel.setBackground(new java.awt.Color(0, 0, 0));
-        minsLabel.setForeground(new java.awt.Color(0, 255, 0));
-        minsLabel.setText("00");
-        minsLabel.setOpaque(true);
-
-        separatorLabel01.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        separatorLabel01.setText(":");
-
-        secsLabel.setBackground(new java.awt.Color(0, 0, 0));
-        secsLabel.setForeground(new java.awt.Color(153, 255, 51));
-        secsLabel.setText("00");
-        secsLabel.setOpaque(true);
-
-        separatorLabel02.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        separatorLabel02.setText(":");
-
-        msecsLabel.setBackground(new java.awt.Color(0, 0, 0));
-        msecsLabel.setForeground(new java.awt.Color(153, 255, 51));
-        msecsLabel.setText("00");
-        msecsLabel.setOpaque(true);
+        timeDigitsLabel.setForeground(new java.awt.Color(0, 51, 153));
+        timeDigitsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        timeDigitsLabel.setOpaque(true);
 
         jScrollPane1.setToolTipText("Player Moves History");
 
@@ -292,16 +269,7 @@ public class Window extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(timeLabel)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(minsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(2, 2, 2)
-                                        .addComponent(separatorLabel01)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(secsLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(separatorLabel02)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(msecsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 48, Short.MAX_VALUE))
+                                        .addComponent(timeDigitsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(winnerJlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -322,14 +290,9 @@ public class Window extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(playerSelectorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(secsLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(timeLabel)
-                                .addComponent(minsLabel)
-                                .addComponent(separatorLabel01)
-                                .addComponent(separatorLabel02)
-                                .addComponent(msecsLabel)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(timeLabel)
+                            .addComponent(timeDigitsLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addComponent(tabsJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, Short.MAX_VALUE))
@@ -350,9 +313,42 @@ public class Window extends javax.swing.JFrame {
     private void resetGameBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetGameBtnMouseClicked
         // Clicking the mouse on "Reset" button
         flushGameText();
+        timeDigitsLabel.setText("00 : 00 :  00");
+        stopWatch.stop();
     }//GEN-LAST:event_resetGameBtnMouseClicked
 
     private void gLabelsClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gLabelsClicked
+        gameStarted=true;
+        //<editor-fold defaultstate="collapsed" desc="==timer==">
+//        thread = new Thread(){
+//            public void run(){
+//                
+//            }
+//        //if(!gameOver)stopWatch.start();
+//        };
+        
+        
+//        if(!gameOver)stopWatch.start();
+        //</editor-fold>
+        
+        if(gameStarted && !gameOver){
+            stopWatch = new Timer(10, new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(mSec > 100){
+                        sec+=1;
+                        mSec=0;
+                    }
+                    if(sec > 59){
+                        min += 1;
+                        sec = 0;
+                    }
+                    timeDigitsLabel.setText(String.format("%02d : %02d : %02d",min,sec,mSec));
+                    mSec+=1;
+                }
+            });
+            stopWatch.start();
+        }
         JLabel gameLabels[] = {gLabel_1, gLabel_2, gLabel_3, gLabel_4,gLabel_5,gLabel_6,gLabel_7, gLabel_8, gLabel_9};
         if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver)){
             if(vsHuman){
@@ -374,79 +370,17 @@ public class Window extends javax.swing.JFrame {
                 ScheduledExecutorService sc = Executors.newSingleThreadScheduledExecutor();
                 sc.schedule (()->{
                     if(!gameOver){
-                        int x = randomizeIfNotEmpty(gameLabels);
-                        gameLabels[x].setText("O");  
-                        gameLabels[x].setBackground(Color.BLUE);
-                        renderTextArea();
-                        winScenario();
+                    int x = randomizeIfNotEmpty(gameLabels);
+                    gameLabels[x].setText("O");  
+                    gameLabels[x].setBackground(Color.BLUE);
+                    renderTextArea();
+                    winScenario();
                     }
                 }, 1250, TimeUnit.MILLISECONDS);
             }
             renderTextArea();
             winScenario();
-        }
-        
-          //<editor-fold defaultstate="collapsed" desc="Coooooooooode">
-//        if(vsHuman){
-//            JLabel gameJLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
-//            // calling win checker to oversee the gameplay
-//            winScenario();
-//            // Casting Action listener source objects to JLabels
-//            if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver) && (vsHuman)){
-//                if(!playerClicked) {
-//                    ((JLabel)evt.getSource()).setText("X");
-//                    ((JLabel)evt.getSource()).setBackground(Color.RED);
-//                    renderTextArea();
-//                    winScenario();
-//                    playerClicked = true;
-//
-//                }else if(playerClicked){
-//                    ((JLabel)evt.getSource()).setText("O");
-//                    ((JLabel)evt.getSource()).setBackground(Color.BLUE);
-//                    renderTextArea();
-//                    winScenario();
-//                    playerClicked = false;
-//                }
-//            }
-//        }else{
-//            // vs machine or AI
-//            if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver) && !(vsHuman)){
-//                if(!playerClicked) {
-//                    ((JLabel)evt.getSource()).setText("X");
-//                    ((JLabel)evt.getSource()).setBackground(Color.RED);
-//                    renderTextArea();
-//                    winScenario();
-//                    playerClicked = true;
-//                }else if(playerClicked){
-//                    int r = (new Random()).nextInt(9);
-//                    //(int)Math.floor(Math.random()*(9-1)+0);
-//                    System.out.println(r);
-//                    ((JLabel)gameJLabels[r]).setText("O");
-//                    ((JLabel)gameJLabels[r]).setBackground(Color.BLUE);
-//                    renderTextArea();
-//                    winScenario();
-//                    playerClicked = false;
-//                }
-//            }
-//        }
-          //</editor-fold>
-        
-        //<editor-fold defaultstate="collapsed" desc=" old code for the gLabelsClicked method ">
-//        for(int i=0;i<=gameLabels.length-1;i++){
-//            if(evt.getSource() == gameLabels[i]){
-//                // If clicked == false & (label == empty or (not X or O))
-//                if((!playerClicked) && (!(gameLabels[i].getText().equals("X")) || !(gameLabels[i].getText().equals("O")))){
-//                    gameLabels[i].setText("X");
-//                    gameLabels[i].setBackground(Color.RED);
-//                    playerClicked = true;
-//                }else if(playerClicked){
-//                    gameLabels[i].setText("O");
-//                    gameLabels[i].setBackground(Color.BLUE);
-//                    playerClicked = false;
-//                }
-//            }
-//        }
-        //</editor-fold>
+        }if(gameOver)stopWatch.stop();        
     }//GEN-LAST:event_gLabelsClicked
 
     private void playerSelectorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_playerSelectorDropdownItemStateChanged
@@ -461,7 +395,7 @@ public class Window extends javax.swing.JFrame {
                 break;
             case "Internet MultiPlayer":
                 JOptionPane.showConfirmDialog(null, 
-                        "Bingo, you're a great player\nThis feature is coming soon.\nStay tuned!",
+                        "Bingo! you're a great player\nThis feature is coming soon.\nStay tuned!",
                         "Coming soon",JOptionPane.PLAIN_MESSAGE);
                 break;
             default:
@@ -488,9 +422,8 @@ public class Window extends javax.swing.JFrame {
         winScenario();
     }
     private int randomizeIfNotEmpty(JLabel[] lebo){
-        // true means the subject is not empty -- recursion should re-run the random num generator
+        // true means the conditional test subject is not empty -- recursion should re-run the random num generator
         int var = (int)(Math.floor(Math.random()*(9)));
-        //System.out.println("Start is ===> "+var);
         if(!(lebo[var].getText()).isEmpty()){
             return randomizeIfNotEmpty(lebo);
         }else{
@@ -498,8 +431,8 @@ public class Window extends javax.swing.JFrame {
         }
     }
     private void renderTextArea(){
-        String move = String.format(" ----- %3.0f ------\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n\n",
-            (float)count,
+        String move = String.format(" ------ %202d ------\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n ++++++++++++++++\n",
+            count,
             gLabel_1.getText().isEmpty()?"    ":" "+gLabel_1.getText()+"  ",
             gLabel_2.getText().isEmpty()?"    ":" "+gLabel_2.getText()+"  ",
             gLabel_3.getText().isEmpty()?"    ":" "+gLabel_3.getText()+"  ",
@@ -615,15 +548,11 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel gLabel_8;
     private javax.swing.JLabel gLabel_9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel minsLabel;
-    private javax.swing.JLabel msecsLabel;
     private javax.swing.JTextArea playerMovesHistory;
     private javax.swing.JComboBox<String> playerSelectorDropdown;
     private javax.swing.JButton resetGameBtn;
-    private javax.swing.JLabel secsLabel;
-    private javax.swing.JLabel separatorLabel01;
-    private javax.swing.JLabel separatorLabel02;
     private javax.swing.JPanel tabsJPanel;
+    private javax.swing.JLabel timeDigitsLabel;
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel winnerColorLabel;
     private javax.swing.JLabel winnerJlabel;

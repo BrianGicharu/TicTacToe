@@ -43,17 +43,8 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="timeLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                                      <Component id="minsLabel" min="-2" pref="14" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                      <Component id="separatorLabel01" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="secsLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="separatorLabel02" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="msecsLabel" min="-2" pref="15" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
+                                      <Component id="timeDigitsLabel" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="winnerJlabel" min="-2" pref="91" max="-2" attributes="0"/>
@@ -84,15 +75,9 @@
                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Component id="playerSelectorDropdown" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="secsLabel" alignment="1" min="-2" pref="14" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="timeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="minsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="separatorLabel01" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="separatorLabel02" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="msecsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="timeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="timeDigitsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
@@ -348,55 +333,12 @@
         <Property name="text" type="java.lang.String" value="Time"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="minsLabel">
+    <Component class="javax.swing.JLabel" name="timeDigitsLabel">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="ff" red="0" type="rgb"/>
+          <Color blue="99" green="33" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
-        <Property name="opaque" type="boolean" value="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="separatorLabel01">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Tahoma" size="12" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value=":"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="secsLabel">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="ff" red="99" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
-        <Property name="opaque" type="boolean" value="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="separatorLabel02">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Tahoma" size="12" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value=":"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="msecsLabel">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="0" type="rgb"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="ff" red="99" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="00"/>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>
