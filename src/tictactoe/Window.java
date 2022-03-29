@@ -20,7 +20,7 @@ import javax.swing.*;
 public class Window extends javax.swing.JFrame {
     // Custom Variables
     private final String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
-    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameStarted=false;
+    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameStarted=false, clickedOnce=false;
     private JLabel[] gameLabels = new JLabel[9];
     private static int count = 1;
     private int min=0, sec =0, mSec=0;
@@ -228,8 +228,8 @@ public class Window extends javax.swing.JFrame {
 
         timeLabel.setText("Time");
 
+        timeDigitsLabel.setFont(new java.awt.Font("Digital-7", 0, 12)); // NOI18N
         timeDigitsLabel.setForeground(new java.awt.Color(0, 51, 153));
-        timeDigitsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         timeDigitsLabel.setOpaque(true);
 
         jScrollPane1.setToolTipText("Player Moves History");
@@ -265,15 +265,15 @@ public class Window extends javax.swing.JFrame {
                             .addComponent(resetGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(timeLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(timeDigitsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(timeDigitsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(winnerJlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(winnerColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)))
+                                        .addComponent(winnerColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGap(2, 2, 2))))))
         );
         layout.setVerticalGroup(
@@ -290,9 +290,9 @@ public class Window extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(playerSelectorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(timeLabel)
-                            .addComponent(timeDigitsLabel))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(timeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(timeDigitsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addComponent(tabsJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, Short.MAX_VALUE))
@@ -312,29 +312,22 @@ public class Window extends javax.swing.JFrame {
 
     private void resetGameBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetGameBtnMouseClicked
         // Clicking the mouse on "Reset" button
+        stopWatch.stop();
+        mSec=0;
+        sec=0;
+        min=0;
+        clickedOnce = false;
         flushGameText();
         timeDigitsLabel.setText("00 : 00 :  00");
-        stopWatch.stop();
     }//GEN-LAST:event_resetGameBtnMouseClicked
 
     private void gLabelsClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gLabelsClicked
         gameStarted=true;
-        //<editor-fold defaultstate="collapsed" desc="==timer==">
-//        thread = new Thread(){
-//            public void run(){
-//                
-//            }
-//        //if(!gameOver)stopWatch.start();
-//        };
-        
-        
-//        if(!gameOver)stopWatch.start();
-        //</editor-fold>
-        
-        if(gameStarted && !gameOver){
-            stopWatch = new Timer(10, new ActionListener(){
-                @Override
-                public void actionPerformed(ActionEvent e) {
+        JLabel gameLabels[] = {gLabel_1, gLabel_2, gLabel_3, gLabel_4,gLabel_5,gLabel_6,gLabel_7, gLabel_8, gLabel_9};
+        if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver)){
+            if(!clickedOnce){
+                clickedOnce = true;
+                stopWatch = new Timer(10, (ActionEvent e) -> {
                     if(mSec > 100){
                         sec+=1;
                         mSec=0;
@@ -345,12 +338,9 @@ public class Window extends javax.swing.JFrame {
                     }
                     timeDigitsLabel.setText(String.format("%02d : %02d : %02d",min,sec,mSec));
                     mSec+=1;
-                }
-            });
-            stopWatch.start();
-        }
-        JLabel gameLabels[] = {gLabel_1, gLabel_2, gLabel_3, gLabel_4,gLabel_5,gLabel_6,gLabel_7, gLabel_8, gLabel_9};
-        if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver)){
+                });
+                stopWatch.start();
+            }
             if(vsHuman){
                 if(!playerClicked) {
                     ((JLabel)evt.getSource()).setText("X");
