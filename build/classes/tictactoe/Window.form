@@ -95,7 +95,7 @@
     <Container class="javax.swing.JPanel" name="tabsJPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="cc" type="rgb"/>
+          <Color blue="0" green="66" red="33" type="rgb"/>
         </Property>
       </Properties>
 
@@ -365,9 +365,6 @@
     </Container>
     <Component class="javax.swing.JLabel" name="winnerColorLabel">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="cc" green="ff" red="0" type="rgb"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="   "/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[9, 12]"/>

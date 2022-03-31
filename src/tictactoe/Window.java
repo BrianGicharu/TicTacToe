@@ -20,12 +20,11 @@ import javax.swing.*;
 public class Window extends javax.swing.JFrame {
     // Custom Variables
     private final String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
-    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameStarted=false, clickedOnce=false;
-    private JLabel[] gameLabels = new JLabel[9];
+    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameDraw=false, gameStarted=false, clickedOnce=false, foundEmpty=true;
+    public static JLabel[] gameLabels;
     private static int count = 1;
     private int min=0, sec =0, mSec=0;
     private Timer stopWatch;
-    private Thread thread;
   
     public Window() {
         JLabel gameLabels[] = {gLabel_1,gLabel_2,gLabel_3,gLabel_4,gLabel_5, gLabel_6,gLabel_7,gLabel_8,gLabel_9};
@@ -65,7 +64,7 @@ public class Window extends javax.swing.JFrame {
         setTitle("Tic Tac Toe");
         setResizable(false);
 
-        tabsJPanel.setBackground(new java.awt.Color(204, 255, 255));
+        tabsJPanel.setBackground(new java.awt.Color(51, 102, 0));
 
         gLabel_2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         gLabel_2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -240,7 +239,6 @@ public class Window extends javax.swing.JFrame {
         playerMovesHistory.setRows(20);
         jScrollPane1.setViewportView(playerMovesHistory);
 
-        winnerColorLabel.setBackground(new java.awt.Color(0, 255, 204));
         winnerColorLabel.setText("   ");
         winnerColorLabel.setMaximumSize(new java.awt.Dimension(9, 12));
         winnerColorLabel.setMinimumSize(new java.awt.Dimension(9, 12));
@@ -312,19 +310,17 @@ public class Window extends javax.swing.JFrame {
 
     private void resetGameBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetGameBtnMouseClicked
         // Clicking the mouse on "Reset" button
-        stopWatch.stop();
-        mSec=0;
-        sec=0;
-        min=0;
-        clickedOnce = false;
-        flushGameText();
+        try{
+            flushGameText();
+        }catch(Exception e){}
         timeDigitsLabel.setText("00 : 00 :  00");
     }//GEN-LAST:event_resetGameBtnMouseClicked
 
+    //@SuppressWarnings("empty-statement")
     private void gLabelsClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gLabelsClicked
         gameStarted=true;
         JLabel gameLabels[] = {gLabel_1, gLabel_2, gLabel_3, gLabel_4,gLabel_5,gLabel_6,gLabel_7, gLabel_8, gLabel_9};
-        if(!(((JLabel)evt.getSource()).getText().equals("O")) && !(((JLabel)evt.getSource()).getText().equals("X")) && !(gameOver)){
+        if(!((JLabel)evt.getSource()).getText().equals("O") && !((JLabel)evt.getSource()).getText().equals("X") && !gameOver){
             if(!clickedOnce){
                 clickedOnce = true;
                 stopWatch = new Timer(10, (ActionEvent e) -> {
@@ -352,41 +348,49 @@ public class Window extends javax.swing.JFrame {
                     ((JLabel)evt.getSource()).setBackground(Color.BLUE);
                     playerClicked = false;
                 }
+                //isDrawn();
             }else if(!vsHuman){
                 // human's turn
                 ((JLabel)evt.getSource()).setText("X");
                 ((JLabel)evt.getSource()).setBackground(Color.RED);            
                 // terminator's turn
-                ScheduledExecutorService sc = Executors.newSingleThreadScheduledExecutor();
-                sc.schedule (()->{
-                    if(!gameOver){
-                    int x = randomizeIfNotEmpty(gameLabels);
-                    gameLabels[x].setText("O");  
-                    gameLabels[x].setBackground(Color.BLUE);
-                    renderTextArea();
-                    winScenario();
+                //winScenario();
+                Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                    if (!gameOver) {
+                        int x1 = randomizeIfNotEmpty(gameLabels);
+                        gameLabels[x1].setText("O");
+                        gameLabels[x1].setBackground(Color.BLUE);
+                        renderTextArea();
+                        winScenario();
                     }
-                }, 1250, TimeUnit.MILLISECONDS);
+                }, 1250+75, TimeUnit.MILLISECONDS);
+                //isDrawn();
             }
             renderTextArea();
-            winScenario();
-        }if(gameOver)stopWatch.stop();        
+            //winScenario();
+        }
+        winScenario();
+        if(gameOver)stopWatch.stop();        
     }//GEN-LAST:event_gLabelsClicked
 
     private void playerSelectorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_playerSelectorDropdownItemStateChanged
         switch (((JComboBox)evt.getSource()).getSelectedItem().toString()) {
             case "Player vs Player":
                 vsHuman = true;
-                flushGameText();
+                try{
+                    flushGameText();
+                }catch(Exception ex){}
                 break;
             case "Player vs AI":
                 vsHuman = false;
-                flushGameText();
+                try{
+                    flushGameText();
+                }catch(Exception ex){}
                 break;
             case "Internet MultiPlayer":
-                JOptionPane.showConfirmDialog(null, 
-                        "Bingo! you're a great player\nThis feature is coming soon.\nStay tuned!",
-                        "Coming soon",JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showConfirmDialog(null,
+                    "Bingo! you're a great player\nThis feature is coming soon.\nStay tuned!",
+                    "Coming soon",JOptionPane.PLAIN_MESSAGE);
                 break;
             default:
                 break;
@@ -394,7 +398,7 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_playerSelectorDropdownItemStateChanged
     
     // Editable methods begin here
-    private void flushGameText(){
+    private void flushGameText()throws Exception{
         JLabel gameLabels[] = {
             gLabel_1, gLabel_2, gLabel_3,
             gLabel_4, gLabel_5, gLabel_6,
@@ -405,8 +409,16 @@ public class Window extends javax.swing.JFrame {
             content.setBackground(new Color(240,240,240));
         }
         count=0;
+        
+        //annexed
+        stopWatch.stop();
+        mSec=0;
+        sec=0;
+        min=0;
+        clickedOnce = false;
+        
         winnerJlabel.setText("No Winner Yet");
-        winnerColorLabel.setBackground(new Color(0,255,204));
+        winnerColorLabel.setBackground(new Color(240,240,240));
         renderTextArea();
         playerMovesHistory.setText(" _MOVES HISTORY_\n");
         winScenario();
@@ -421,7 +433,7 @@ public class Window extends javax.swing.JFrame {
         }
     }
     private void renderTextArea(){
-        String move = String.format(" ------ %202d ------\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n ++++++++++++++++\n",
+        String movesData = String.format(" ------ %02d ------\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n ++++++++++++++++\n",
             count,
             gLabel_1.getText().isEmpty()?"    ":" "+gLabel_1.getText()+"  ",
             gLabel_2.getText().isEmpty()?"    ":" "+gLabel_2.getText()+"  ",
@@ -433,10 +445,16 @@ public class Window extends javax.swing.JFrame {
             gLabel_8.getText().isEmpty()?"    ":" "+gLabel_8.getText()+"  ",
             gLabel_9.getText().isEmpty()?"    ":" "+gLabel_9.getText()+"  ");
         count++;
-        playerMovesHistory.setText(playerMovesHistory.getText()+move);
+        playerMovesHistory.setText(playerMovesHistory.getText()+movesData);
     }
     
     private void winScenario(){
+        // Method vars 
+        JLabel gameLabels[] = {
+            gLabel_1, gLabel_2, gLabel_3,
+            gLabel_4, gLabel_5, gLabel_6,
+            gLabel_7, gLabel_8, gLabel_9
+        };
         //<editor-fold defaultstate="collapsed" desc=" Win Scenario rough design ">
         /*
         * gLabel_1, gLabel_2, gLabel_3,
@@ -455,43 +473,98 @@ public class Window extends javax.swing.JFrame {
         if(winCombinationComparator(gLabel_1.getText(), gLabel_2.getText(), gLabel_3.getText())){
             winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }
         else if(winCombinationComparator(gLabel_7.getText(), gLabel_8.getText(), gLabel_9.getText())){
             winnerJlabel.setText("Player "+gLabel_7.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_7.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_3.getText(), gLabel_6.getText(), gLabel_9.getText())){
             winnerJlabel.setText("Player "+gLabel_3.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_3.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_7.getText(), gLabel_5.getText(), gLabel_3.getText())){
             winnerJlabel.setText("Player "+gLabel_7.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_7.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_1.getText(), gLabel_5.getText(), gLabel_9.getText())){
             winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_4.getText(), gLabel_5.getText(), gLabel_6.getText())){
             winnerJlabel.setText("Player "+gLabel_4.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_4.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_2.getText(), gLabel_5.getText(), gLabel_8.getText())){
             winnerJlabel.setText("Player "+gLabel_2.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_2.getBackground());
+            stopWatch.stop();
             gameOver = true;
         }else if(winCombinationComparator(gLabel_1.getText(), gLabel_4.getText(), gLabel_7.getText())){
             winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
+            stopWatch.stop();
             gameOver = true;  
         }else{
             gameOver = false;
+        } 
+        isDrawn();
+    }
+    
+    private void isDrawn(){
+        JLabel gameLabels[] = {
+            gLabel_1, gLabel_2, gLabel_3,
+            gLabel_4, gLabel_5, gLabel_6,
+            gLabel_7, gLabel_8, gLabel_9
+        };
+        int x=0,j=0;
+        // We're supposed to confirm that the board is fully occupied here
+        // If the board is fully occupied, we assign the boolean var `gameDraw as true
+        for (x=0;x<gameLabels.length;x++){
+//            System.out.println("Text: "+gameLabels[x].getText()+" index: "+x);
+            /*gameLabels[x].getText().equals("O")) || (gameLabels[x].getText().equals("X"))*/
+            if(!foundEmpty && x==gameLabels.length-1){
+                gameDraw=true;
+                break;
+            }
+            //gameDraw=false;
+            if(gameOver)
+                break;
+            if((!gameLabels[x].getText().isEmpty())){
+                System.out.println("The: "+gameLabels[x].getText()+" of Index "+x+" is not empty ----");
+                foundEmpty=false;
+                j=x;
+                break;
+            }else{
+                System.out.println("The: "+gameLabels[x].getText()+" of Index "+x+" is blank");
+            }
+            if(8==j)System.out.println();
+            
+        }//end of for-loop
+        
+        if(gameDraw){
+            gameOver = true;
+            stopWatch.stop();
+            winnerJlabel.setText("DRAW!");
+            
         }
     }
     
     public boolean winCombinationComparator(String a, String b, String c){
         return (a.equals(b) && b.equals(c)) && (!a.isEmpty() || !b.isEmpty() || !c.isEmpty());
+    }
+    
+    public boolean strIsEmpty(String str){    
+        if(str.equals(""))
+            return strIsEmpty(str);
+        else
+            return true;
     }
     
     @SuppressWarnings("CallToPrintStackTrace")
