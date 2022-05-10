@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
@@ -21,23 +22,39 @@ import javax.swing.*;
 /**
  * @author briangicharu
  */
-
 public class Window extends javax.swing.JFrame {
+
     // Custom Variables
+    static class Move {
+
+        int row, col;
+    };
     private final String gitUrl = "https://github.com/BrianGicharu/TicTacToe.git";
-    public boolean playerClicked=false, vsHuman=true, gameOver=false, gameDraw=false;
-    public boolean gameStarted=false, clickedOnce=false, foundEmpty=true, stopWatchIsRunning=false;
+    public boolean playerClicked = false, vsHuman = true, gameOver = false, gameDraw = false, aiStrong = false;
+    public boolean gameStarted = false, clickedOnce = false, foundEmpty = true, stopWatchIsRunning = false;
     public static JLabel[] gameLabels;
-    private static int count = 1;
-    private int min=0, sec =0, mSec=0;
+    public static JLabel[][] lBoard;
+    private static int count = 1, x, y, bScore = 0, i = 0, c, r;
+    ;
+    private int min = 0, sec = 0, mSec = 0;
+    private int score;
+    public static MouseEvent mev = null;
     private static Timer stopWatch;
-  
+    HashMap<String, Integer> scores;
+
     public Window() {
+
         JLabel gameLabels[] = {
-            gLabel_1,gLabel_2,gLabel_3,
-            gLabel_4,gLabel_5, gLabel_6,
-            gLabel_7,gLabel_8,gLabel_9
+            gLabel_1, gLabel_2, gLabel_3,
+            gLabel_4, gLabel_5, gLabel_6,
+            gLabel_7, gLabel_8, gLabel_9
         };
+
+        scores = new HashMap<String, Integer>();
+        scores.put("TIE", 0);
+        scores.put("WIN", 10);
+        scores.put("LOSS", -10);
+
         initComponents();
     }
 
@@ -223,7 +240,7 @@ public class Window extends javax.swing.JFrame {
             }
         });
 
-        playerSelectorDropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Player vs Player", "Player vs AI", "Internet MultiPlayer" }));
+        playerSelectorDropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Player vs Player", "Player vs AI (NOOB)", "Player vs AI (Advanced)", "Internet MultiPlayer" }));
         playerSelectorDropdown.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 playerSelectorDropdownItemStateChanged(evt);
@@ -315,101 +332,191 @@ public class Window extends javax.swing.JFrame {
 
     private void ContactInformationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ContactInformationMouseClicked
         // Open the confirmation dialog box
-        if(JOptionPane.showConfirmDialog(null,"Visit \"Tic Tac Toe\" Repository?", "Confirm Action", 
-                JOptionPane.OK_CANCEL_OPTION)==0)
+        if (JOptionPane.showConfirmDialog(null, "Visit \"Tic Tac Toe\" Repository?", "Confirm Action",
+                JOptionPane.OK_CANCEL_OPTION) == 0) {
             visitSite(URI.create(gitUrl));
+        }
     }//GEN-LAST:event_ContactInformationMouseClicked
 
     private void resetGameBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetGameBtnMouseClicked
         try {
             // Clicking the mouse on "Reset" button
-            flushGameText();
+            cleanBoard();
         } catch (Exception ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
         timeDigitsLabel.setText("00 : 00 :  00");
     }//GEN-LAST:event_resetGameBtnMouseClicked
-    private void resetBooleans(){
-        gameStarted=false;
-        foundEmpty=false;
+    private void resetBooleans() {
+        gameStarted = false;
+        foundEmpty = false;
         gameOver = false;
         gameDraw = false;
     }
+
     //@SuppressWarnings("empty-statement")
     private void gLabelsClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gLabelsClicked
-        gameStarted=true;
+        gameStarted = true;
+        mev = evt;
+        int x1 = 0;
         JLabel gameLabels[] = {
             gLabel_1, gLabel_2, gLabel_3,
-            gLabel_4,gLabel_5,gLabel_6,
+            gLabel_4, gLabel_5, gLabel_6,
             gLabel_7, gLabel_8, gLabel_9
         };
-        if(!((JLabel)evt.getSource()).getText().equals("O") && !((JLabel)evt.getSource()).
-                getText().equals("X") && !gameOver && !gameDraw){
-            if(!clickedOnce){
+        JLabel bd[][] = {
+            {gLabel_1, gLabel_2, gLabel_3},
+            {gLabel_4, gLabel_5, gLabel_6},
+            {gLabel_7, gLabel_8, gLabel_9}
+        };
+        int t = 0;
+        String[][] boardContent = new String[3][3];
+        for (x = 0; x < 3; x++) {
+            for (x = 0; x < 3; x++) {
+                boardContent[x][y] = bd[x][y].getText();
+                t++;
+            }
+            System.out.println();
+        }
+
+        if (!((JLabel) evt.getSource()).getText().equals("O") && !((JLabel) evt.getSource()).
+                getText().equals("X") && !gameOver && !gameDraw) {
+            //Play duration timer
+            if (!clickedOnce) {
                 clickedOnce = true;
-                stopWatch = new Timer(10, (ActionEvent e) -> {
-                    stopWatchIsRunning=true;
-                    if(mSec > 99){
-                        sec+=1;
-                        mSec=0;
+                stopWatch = new Timer(1, (ActionEvent e) -> {
+                    stopWatchIsRunning = true;
+                    if (mSec > 99) {
+                        sec += 1;
+                        mSec = 0;
                     }
-                    if(sec > 59){
+                    if (sec > 59) {
                         min += 1;
                         sec = 0;
                     }
-                    timeDigitsLabel.setText(String.format("%02d : %02d : %02d",min,sec,mSec));
-                    mSec+=1;
+                    timeDigitsLabel.setText(String.format("%02d : %02d : %02d", min, sec, mSec));
+                    mSec += 1;
                 });
                 stopWatch.start();
             }
-            if(vsHuman){
-                if(!playerClicked) {
-                    ((JLabel)evt.getSource()).setText("X");
-                    ((JLabel)evt.getSource()).setBackground(Color.RED);
+            // Playing PVP
+            if (vsHuman) {
+                if (!playerClicked) {
+                    ((JLabel) evt.getSource()).setText("X");
+                    ((JLabel) evt.getSource()).setBackground(Color.RED);
                     playerClicked = true;
 
-                }else if(playerClicked){
-                    ((JLabel)evt.getSource()).setText("O");
-                    ((JLabel)evt.getSource()).setBackground(Color.BLUE);
+                } else if (playerClicked) {
+                    ((JLabel) evt.getSource()).setText("O");
+                    ((JLabel) evt.getSource()).setBackground(Color.BLUE);
                     playerClicked = false;
                 }
-            }else if(!vsHuman){
-                // human's turn
-                ((JLabel)evt.getSource()).setText("X");
-                ((JLabel)evt.getSource()).setBackground(Color.RED);
-                
-                // terminator's turn
-                Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-                    if (!gameOver) {
-                        int x1 = randomizeIfNotEmpty(gameLabels);
-                        gameLabels[x1].setText("O");
-                        gameLabels[x1].setBackground(Color.BLUE);
-                        renderTextArea();
-                        winScenario();
-                    }
-                }, 1275, TimeUnit.MILLISECONDS);
+            } else if (!vsHuman) {
+                //Playing Player vs weak computer algo
+                if (!aiStrong) {
+                    // human's turn
+                    ((JLabel) evt.getSource()).setText("X");
+                    ((JLabel) evt.getSource()).setBackground(Color.RED);
+                    // terminator's turn
+                    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                        if (!gameOver) {
+                            int k = randomizeIfNotEmpty(gameLabels);
+                            System.out.println(k);
+                            gameLabels[k].setText("O");
+                            gameLabels[k].setBackground(Color.BLUE);
+                            renderTextArea();
+                            winScenario();
+                        }
+                    }, 1275, TimeUnit.MILLISECONDS);
+                } else if (aiStrong) {
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                    // human's turn
+//                    ((JLabel)evt.getSource()).setText("X");
+//                    ((JLabel)evt.getSource()).setBackground(Color.RED);    
+                    //terminator's turn
+                    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                        if (!gameOver) {
+                            //call to AI Play algo (minimax function)
+                            System.out.println("Imma count how many times am getting called");
+                            Move bestMove = findBestMove(boardContent);
+                            bd[bestMove.row][bestMove.col].setText("O");
+                            bd[bestMove.row][bestMove.col].setBackground(Color.BLUE);
+                            System.out.println(bestMove.row + ", " + bestMove.col + "hello");
+                            renderTextArea();
+                            winScenario();
+                        }
+                    }, 2000, TimeUnit.MILLISECONDS);
+                }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
             renderTextArea();
         }
         winScenario();
-        if(gameOver)stopWatch.stop();        
+        if (gameOver || gameDraw) {
+            stopWatch.stop();
+        }
     }//GEN-LAST:event_gLabelsClicked
 
+    private String[][] extract(JLabel[][] lebo) {
+        String[][] s = new String[3][3];
+        for (int j = 0; j < 3; j++) {
+            for (int k = 0; k < 3; k++) {
+                s[j][k] = lebo[j][k].getText();
+            }
+        }
+        return s;
+    }
+
+    // String player = "X", opponent = "O";
+    // This function returns true if there are moves
+    // remaining on the board. It returns false if
+    // there are no moves left to play.
+    static Boolean isMovesLeft(String board[][]) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j].isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int blankSpaces() {
+        int x, count = 0;
+        for (x = 0; x < gameLabels.length; x++) {
+            if (lBoard[x].getText().isEmpty()) {
+                x += 1;
+            }
+        }
+    }
+
     private void playerSelectorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_playerSelectorDropdownItemStateChanged
-        switch (((JComboBox)evt.getSource()).getSelectedItem().toString()) {
+        switch (((JComboBox) evt.getSource()).getSelectedItem().toString()) {
             case "Player vs Player":
                 vsHuman = true;
                 try {
-                    flushGameText();
+                    cleanBoard();
                 } catch (Exception ex) {
                     Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 resetBooleans();
                 break;
-            case "Player vs AI":
+            case "Player vs AI (NOOB)":
                 vsHuman = false;
+                aiStrong = false;
                 try {
-                    flushGameText();
+                    cleanBoard();
+                } catch (Exception ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                resetBooleans();
+                break;
+            case "Player vs AI (Advanced)":
+                vsHuman = false;
+                aiStrong = true;
+                try {
+                    cleanBoard();
                 } catch (Exception ex) {
                     Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -417,69 +524,73 @@ public class Window extends javax.swing.JFrame {
                 break;
             case "Internet MultiPlayer":
                 JOptionPane.showConfirmDialog(null,
-                    "Bingo! you're a great player\nThis feature is coming soon.\nStay tuned!",
-                    "Coming soon",JOptionPane.PLAIN_MESSAGE);
+                        "Bingo! you're a great player\nThis feature is coming soon.\nStay tuned!",
+                        "Coming soon", JOptionPane.PLAIN_MESSAGE);
                 break;
             default:
                 break;
         }
     }//GEN-LAST:event_playerSelectorDropdownItemStateChanged
-    
+
     // Editable methods begin here
-    private void flushGameText()throws Exception{
+    private void cleanBoard() throws Exception {
         JLabel gameLabels[] = {
             gLabel_1, gLabel_2, gLabel_3,
             gLabel_4, gLabel_5, gLabel_6,
             gLabel_7, gLabel_8, gLabel_9
         };
-        for(JLabel content:gameLabels){
+        for (JLabel content : gameLabels) {
             content.setText("");
-            content.setBackground(new Color(240,240,240));
+            content.setBackground(new Color(240, 240, 240));
         }
-        count=0;
-        
-        if(stopWatchIsRunning)
+        count = 0;
+
+        if (stopWatchIsRunning) {
             stopWatch.stop();
-        
-        mSec=0;
-        sec=0;
-        min=0;
+        }
+
+        mSec = 0;
+        sec = 0;
+        min = 0;
         clickedOnce = false;
-        
+
         winnerJlabel.setText("PLAY");
-        winnerColorLabel.setBackground(new Color(240,240,240));
+        winnerColorLabel.setBackground(new Color(240, 240, 240));
         renderTextArea();
         playerMovesHistory.setText(" _MOVES HISTORY_\n");
         resetBooleans();
     }
-    private int randomizeIfNotEmpty(JLabel[] lebo){
+
+    private int randomizeIfNotEmpty(JLabel[] lebo) {
         // True means the array element test subject is not empty
         // Recursion should re-run the random num generator
-        int var = (int)(Math.floor(Math.random()*(9)));
-        if(!(lebo[var].getText()).isEmpty()){
+        int var = (int) (Math.floor(Math.random() * (9)));
+        System.out.println(var + " Ive been called to serve the algorithm");
+        if (!(lebo[var].getText()).isEmpty()) {
             return randomizeIfNotEmpty(lebo);
-        }else{
+        } else {
             return var;
         }
     }
-    private void renderTextArea(){
+
+    private void renderTextArea() {
         String movesData = String.format(" %02d  \n ._______________\n |%s|%s|%s|\n |%s|%s|%s|\n |%s|%s|%s|\n ~~~~~~~~~~~~~~~~\n",
-            count,
-            gLabel_1.getText().isEmpty()?"    ":" "+gLabel_1.getText()+"  ",
-            gLabel_2.getText().isEmpty()?"    ":" "+gLabel_2.getText()+"  ",
-            gLabel_3.getText().isEmpty()?"    ":" "+gLabel_3.getText()+"  ",
-            gLabel_4.getText().isEmpty()?"    ":" "+gLabel_4.getText()+"  ",
-            gLabel_5.getText().isEmpty()?"    ":" "+gLabel_5.getText()+"  ",
-            gLabel_6.getText().isEmpty()?"    ":" "+gLabel_6.getText()+"  ",
-            gLabel_7.getText().isEmpty()?"    ":" "+gLabel_7.getText()+"  ",
-            gLabel_8.getText().isEmpty()?"    ":" "+gLabel_8.getText()+"  ",
-            gLabel_9.getText().isEmpty()?"    ":" "+gLabel_9.getText()+"  ");
+                count,
+                gLabel_1.getText().isEmpty() ? "    " : " " + gLabel_1.getText() + "  ",
+                gLabel_2.getText().isEmpty() ? "    " : " " + gLabel_2.getText() + "  ",
+                gLabel_3.getText().isEmpty() ? "    " : " " + gLabel_3.getText() + "  ",
+                gLabel_4.getText().isEmpty() ? "    " : " " + gLabel_4.getText() + "  ",
+                gLabel_5.getText().isEmpty() ? "    " : " " + gLabel_5.getText() + "  ",
+                gLabel_6.getText().isEmpty() ? "    " : " " + gLabel_6.getText() + "  ",
+                gLabel_7.getText().isEmpty() ? "    " : " " + gLabel_7.getText() + "  ",
+                gLabel_8.getText().isEmpty() ? "    " : " " + gLabel_8.getText() + "  ",
+                gLabel_9.getText().isEmpty() ? "    " : " " + gLabel_9.getText() + "  ");
         count++;
-        playerMovesHistory.setText(playerMovesHistory.getText()+movesData);
-        
+        playerMovesHistory.setText(playerMovesHistory.getText() + movesData);
+
     }
-    
-    private void winScenario(){
+
+    private void winScenario() {
         // Method vars 
         JLabel gameLabels[] = {
             gLabel_1, gLabel_2, gLabel_3,
@@ -497,94 +608,93 @@ public class Window extends javax.swing.JFrame {
         * |7|8|9|                             | `1-4-7   `1-5-9 |
         *                                     | `4-5-6   `2-5-8 |
         *                                     -------------------
-        */
+         */
         //</editor-fold>
         isDrawn();
         // gameplay quit or exit condition (mtu akishinda) ama gameover
-        if(winCombinationComparator(gLabel_1.getText(), gLabel_2.getText(), gLabel_3.getText())){
-            winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
+        if (winEquals(gLabel_1.getText(), gLabel_2.getText(), gLabel_3.getText())) {
+            winnerJlabel.setText("Player " + gLabel_1.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }
-        else if(winCombinationComparator(gLabel_7.getText(), gLabel_8.getText(), gLabel_9.getText())){
-            winnerJlabel.setText("Player "+gLabel_7.getText()+" WINS!!");
+        } else if (winEquals(gLabel_7.getText(), gLabel_8.getText(), gLabel_9.getText())) {
+            winnerJlabel.setText("Player " + gLabel_7.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_7.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_3.getText(), gLabel_6.getText(), gLabel_9.getText())){
-            winnerJlabel.setText("Player "+gLabel_3.getText()+" WINS!!");
+        } else if (winEquals(gLabel_3.getText(), gLabel_6.getText(), gLabel_9.getText())) {
+            winnerJlabel.setText("Player " + gLabel_3.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_3.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_7.getText(), gLabel_5.getText(), gLabel_3.getText())){
-            winnerJlabel.setText("Player "+gLabel_7.getText()+" WINS!!");
+        } else if (winEquals(gLabel_7.getText(), gLabel_5.getText(), gLabel_3.getText())) {
+            winnerJlabel.setText("Player " + gLabel_7.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_7.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_1.getText(), gLabel_5.getText(), gLabel_9.getText())){
-            winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
+        } else if (winEquals(gLabel_1.getText(), gLabel_5.getText(), gLabel_9.getText())) {
+            winnerJlabel.setText("Player " + gLabel_1.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_4.getText(), gLabel_5.getText(), gLabel_6.getText())){
-            winnerJlabel.setText("Player "+gLabel_4.getText()+" WINS!!");
+        } else if (winEquals(gLabel_4.getText(), gLabel_5.getText(), gLabel_6.getText())) {
+            winnerJlabel.setText("Player " + gLabel_4.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_4.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_2.getText(), gLabel_5.getText(), gLabel_8.getText())){
-            winnerJlabel.setText("Player "+gLabel_2.getText()+" WINS!!");
+        } else if (winEquals(gLabel_2.getText(), gLabel_5.getText(), gLabel_8.getText())) {
+            winnerJlabel.setText("Player " + gLabel_2.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_2.getBackground());
             stopWatch.stop();
             gameOver = true;
-        }else if(winCombinationComparator(gLabel_1.getText(), gLabel_4.getText(), gLabel_7.getText())){
-            winnerJlabel.setText("Player "+gLabel_1.getText()+" WINS!!");
+        } else if (winEquals(gLabel_1.getText(), gLabel_4.getText(), gLabel_7.getText())) {
+            winnerJlabel.setText("Player " + gLabel_1.getText() + " WINS!!");
             winnerColorLabel.setBackground(gLabel_1.getBackground());
             stopWatch.stop();
-            gameOver = true;  
-        }else{
+            gameOver = true;
+        } else {
             gameOver = false;
-            if(gameDraw){
+            if (gameDraw) {
                 winnerJlabel.setText("GAME DRAW!");
-                gameOver=true;
+                gameOver = true;
             }
         }
     }
-    
-    private void isDrawn(){
+
+    private void isDrawn() {
         JLabel gameLabels[] = {
             gLabel_1, gLabel_2, gLabel_3,
             gLabel_4, gLabel_5, gLabel_6,
             gLabel_7, gLabel_8, gLabel_9
         };
         int[] arr = new int[gameLabels.length];
-        for(int i=0;i<gameLabels.length;i++){
-            if(gameLabels[i].getText().isEmpty()){
-                arr[i]=1;
-            }else if(!gameLabels[i].getText().isEmpty()){
-                arr[i]=0;
+        for (int i = 0; i < gameLabels.length; i++) {
+            if (gameLabels[i].getText().isEmpty()) {
+                arr[i] = 1;
+            } else if (!gameLabels[i].getText().isEmpty()) {
+                arr[i] = 0;
             }
         }
         Set<Integer> arrayMatch = Arrays.stream(arr).boxed().collect(Collectors.toSet());
-        gameDraw = arrayMatch.size()==1;
+        gameDraw = arrayMatch.size() == 1;
     }
-    
-    public boolean winCombinationComparator(String a, String b, String c){
+
+    public boolean winEquals(String a, String b, String c) {
         return (a.equals(b) && b.equals(c)) && (!a.isEmpty() || !b.isEmpty() || !c.isEmpty());
     }
-    
+
     private void visitSite(URI url) {
-        try{
+        try {
             Desktop.getDesktop().browse(url);
-        }catch(IOException ex){
+        } catch (IOException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        
+
         //<editor-fold defaultstate="collapsed" desc=" Nimbus look and feel(GU) seting ">
-        
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
