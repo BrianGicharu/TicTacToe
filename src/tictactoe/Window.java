@@ -34,8 +34,11 @@ public class Window extends javax.swing.JFrame {
     public boolean gameStarted = false, clickedOnce = false, foundEmpty = true, stopWatchIsRunning = false;
     public static JLabel[] gameLabels;
     public static JLabel[][] lBoard;
-    private static int count = 1, x, y, bScore = 0, i = 0, c, r;
-    ;
+    private static int count = 1, x, y, bScore = 0, i = 0, c, r, iter = 0;
+    private static final int PLAYER_X=0, PLAYER_O=0;
+    
+    private static MouseEvent action;
+    
     private int min = 0, sec = 0, mSec = 0;
     private int score;
     public static MouseEvent mev = null;
@@ -43,13 +46,6 @@ public class Window extends javax.swing.JFrame {
     HashMap<String, Integer> scores;
 
     public Window() {
-
-        JLabel gameLabels[] = {
-            gLabel_1, gLabel_2, gLabel_3,
-            gLabel_4, gLabel_5, gLabel_6,
-            gLabel_7, gLabel_8, gLabel_9
-        };
-
         scores = new HashMap<String, Integer>();
         scores.put("TIE", 0);
         scores.put("WIN", 10);
@@ -83,7 +79,7 @@ public class Window extends javax.swing.JFrame {
         winnerJlabel = new javax.swing.JLabel();
         timeLabel = new javax.swing.JLabel();
         timeDigitsLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scrollPane = new javax.swing.JScrollPane();
         playerMovesHistory = new javax.swing.JTextArea();
         winnerColorLabel = new javax.swing.JLabel();
 
@@ -179,17 +175,17 @@ public class Window extends javax.swing.JFrame {
         tabsJPanelLayout.setHorizontalGroup(
             tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabsJPanelLayout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gLabel_1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(gLabel_4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gLabel_1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gLabel_7, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tabsJPanelLayout.createSequentialGroup()
                         .addComponent(gLabel_2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(gLabel_3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(gLabel_3, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE))
                     .addGroup(tabsJPanelLayout.createSequentialGroup()
                         .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(gLabel_8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -198,26 +194,26 @@ public class Window extends javax.swing.JFrame {
                         .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(gLabel_6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(gLabel_9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(7, 7, 7))
+                .addContainerGap())
         );
         tabsJPanelLayout.setVerticalGroup(
             tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tabsJPanelLayout.createSequentialGroup()
-                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(gLabel_2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(gLabel_4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gLabel_6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(gLabel_7, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(gLabel_8, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(gLabel_9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gLabel_1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gLabel_5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(tabsJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gLabel_8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gLabel_7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -256,16 +252,17 @@ public class Window extends javax.swing.JFrame {
 
         timeDigitsLabel.setFont(new java.awt.Font("Digital-7", 0, 12)); // NOI18N
         timeDigitsLabel.setForeground(new java.awt.Color(51, 0, 0));
+        timeDigitsLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         timeDigitsLabel.setText("00 : 00 : 00");
         timeDigitsLabel.setOpaque(true);
 
-        jScrollPane1.setToolTipText("Player Moves History");
+        scrollPane.setToolTipText("Player Moves History");
 
         playerMovesHistory.setEditable(false);
         playerMovesHistory.setColumns(5);
         playerMovesHistory.setFont(new java.awt.Font("MS Gothic", 1, 12)); // NOI18N
         playerMovesHistory.setRows(20);
-        jScrollPane1.setViewportView(playerMovesHistory);
+        scrollPane.setViewportView(playerMovesHistory);
 
         winnerColorLabel.setText("   ");
         winnerColorLabel.setMaximumSize(new java.awt.Dimension(9, 12));
@@ -280,38 +277,35 @@ public class Window extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(ContactInformation, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ContactInformation, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tabsJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playerSelectorDropdown, 0, 0, Short.MAX_VALUE)
-                            .addComponent(resetGameBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(timeLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(timeDigitsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(winnerJlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(winnerColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGap(2, 2, 2))))))
+                                .addComponent(timeLabel)
+                                .addGap(18, 18, 18)
+                                .addComponent(timeDigitsLabel)
+                                .addGap(0, 0, 0))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(winnerJlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(winnerColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(playerSelectorDropdown, 0, 156, Short.MAX_VALUE)
+                            .addComponent(scrollPane)
+                            .addComponent(resetGameBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(0, 2, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(winnerJlabel, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-                            .addComponent(winnerColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(winnerJlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(winnerColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resetGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(playerSelectorDropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -320,9 +314,12 @@ public class Window extends javax.swing.JFrame {
                             .addComponent(timeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(timeDigitsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(tabsJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, Short.MAX_VALUE))
-                .addGap(1, 1, 1)
+                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tabsJPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(ContactInformation)
                 .addGap(5, 5, 5))
         );
@@ -359,11 +356,6 @@ public class Window extends javax.swing.JFrame {
         gameStarted = true;
         mev = evt;
         int x1 = 0;
-        JLabel gameLabels[] = {
-            gLabel_1, gLabel_2, gLabel_3,
-            gLabel_4, gLabel_5, gLabel_6,
-            gLabel_7, gLabel_8, gLabel_9
-        };
         JLabel bd[][] = {
             {gLabel_1, gLabel_2, gLabel_3},
             {gLabel_4, gLabel_5, gLabel_6},
@@ -429,19 +421,21 @@ public class Window extends javax.swing.JFrame {
                         }
                     }, 1275, TimeUnit.MILLISECONDS);
                 } else if (aiStrong) {
+                    action = evt;
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                     // human's turn
-//                    ((JLabel)evt.getSource()).setText("X");
-//                    ((JLabel)evt.getSource()).setBackground(Color.RED);    
+                    ((JLabel)evt.getSource()).setText("X");
+                    ((JLabel)evt.getSource()).setBackground(Color.RED);    
                     //terminator's turn
                     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
                         if (!gameOver) {
+                           
                             //call to AI Play algo (minimax function)
                             System.out.println("Imma count how many times am getting called");
-                            Move bestMove = findBestMove(boardContent);
-                            bd[bestMove.row][bestMove.col].setText("O");
-                            bd[bestMove.row][bestMove.col].setBackground(Color.BLUE);
-                            System.out.println(bestMove.row + ", " + bestMove.col + "hello");
+//                            Move bestMove = findBestMove(boardContent);
+//                            bd[bestMove.row][bestMove.col].setText("O");
+//                            bd[bestMove.row][bestMove.col].setBackground(Color.BLUE);
+//                            System.out.println(bestMove.row + ", " + bestMove.col + "hello");
                             renderTextArea();
                             winScenario();
                         }
@@ -456,17 +450,34 @@ public class Window extends javax.swing.JFrame {
             stopWatch.stop();
         }
     }//GEN-LAST:event_gLabelsClicked
-
-    private String[][] extract(JLabel[][] lebo) {
-        String[][] s = new String[3][3];
-        for (int j = 0; j < 3; j++) {
-            for (int k = 0; k < 3; k++) {
-                s[j][k] = lebo[j][k].getText();
+    
+    private static int hasPlayerWon(int player){
+        if(!winnerJlabel.getText().contains("X"))
+            return 1;
+        if(!winnerJlabel.getText().contains("O"))
+            return -1;
+        return 0;
+    }
+    
+    private static void findBestMove(){
+        int matches = 0;
+        JLabel[] possibleMoves;
+        JLabel winningCombos [][] = {
+            {gLabel_1, gLabel_2, gLabel_3},
+            {gLabel_4, gLabel_5, gLabel_6},
+            {gLabel_7, gLabel_8, gLabel_9},
+            {gLabel_1, gLabel_4, gLabel_7},
+            {gLabel_2, gLabel_5, gLabel_8},
+            {gLabel_3, gLabel_6, gLabel_9},
+            {gLabel_1, gLabel_5, gLabel_9},
+            {gLabel_3, gLabel_5, gLabel_7}
+        };
+        for(JLabel[] lebo : winningCombos){
+            for(JLabel l : lebo){
+                if(l)
             }
         }
-        return s;
     }
-
     // String player = "X", opponent = "O";
     // This function returns true if there are moves
     // remaining on the board. It returns false if
@@ -482,13 +493,17 @@ public class Window extends javax.swing.JFrame {
         return false;
     }
 
-    private int blankSpaces() {
-        int x, count = 0;
-        for (x = 0; x < gameLabels.length; x++) {
-            if (lBoard[x].getText().isEmpty()) {
-                x += 1;
+    private static int blankSpaces() {
+        int x, y;
+        iter = 0;
+        for (x=0; x<3; x++) {
+            for(y=0;y<3;y++){
+                if (lBoard[x][y].getText().isEmpty()) {
+                    iter += 1;
+                }
             }
         }
+        return iter;
     }
 
     private void playerSelectorDropdownItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_playerSelectorDropdownItemStateChanged
@@ -534,10 +549,10 @@ public class Window extends javax.swing.JFrame {
 
     // Editable methods begin here
     private void cleanBoard() throws Exception {
-        JLabel gameLabels[] = {
-            gLabel_1, gLabel_2, gLabel_3,
-            gLabel_4, gLabel_5, gLabel_6,
-            gLabel_7, gLabel_8, gLabel_9
+        gameLabels = new JLabel[]{
+        gLabel_1, gLabel_2, gLabel_3,
+        gLabel_4, gLabel_5, gLabel_6,
+        gLabel_7, gLabel_8, gLabel_9
         };
         for (JLabel content : gameLabels) {
             content.setText("");
@@ -591,12 +606,6 @@ public class Window extends javax.swing.JFrame {
     }
 
     private void winScenario() {
-        // Method vars 
-        JLabel gameLabels[] = {
-            gLabel_1, gLabel_2, gLabel_3,
-            gLabel_4, gLabel_5, gLabel_6,
-            gLabel_7, gLabel_8, gLabel_9
-        };
         //<editor-fold defaultstate="collapsed" desc=" Win Scenario rough design ">
         /*
         * gLabel_1, gLabel_2, gLabel_3,
@@ -716,24 +725,24 @@ public class Window extends javax.swing.JFrame {
     //<editor-fold defaultstate="collapsed" desc="GUI generated vars">
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ContactInformation;
-    private javax.swing.JLabel gLabel_1;
-    private javax.swing.JLabel gLabel_2;
-    private javax.swing.JLabel gLabel_3;
-    private javax.swing.JLabel gLabel_4;
-    private javax.swing.JLabel gLabel_5;
-    private javax.swing.JLabel gLabel_6;
-    private javax.swing.JLabel gLabel_7;
-    private javax.swing.JLabel gLabel_8;
-    private javax.swing.JLabel gLabel_9;
-    private javax.swing.JScrollPane jScrollPane1;
+    private static javax.swing.JLabel gLabel_1;
+    private static javax.swing.JLabel gLabel_2;
+    private static javax.swing.JLabel gLabel_3;
+    private static javax.swing.JLabel gLabel_4;
+    private static javax.swing.JLabel gLabel_5;
+    private static javax.swing.JLabel gLabel_6;
+    private static javax.swing.JLabel gLabel_7;
+    private static javax.swing.JLabel gLabel_8;
+    private static javax.swing.JLabel gLabel_9;
     private javax.swing.JTextArea playerMovesHistory;
     private javax.swing.JComboBox<String> playerSelectorDropdown;
     private javax.swing.JButton resetGameBtn;
+    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JPanel tabsJPanel;
     private javax.swing.JLabel timeDigitsLabel;
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel winnerColorLabel;
-    private javax.swing.JLabel winnerJlabel;
+    private static javax.swing.JLabel winnerJlabel;
     // End of variables declaration//GEN-END:variables
     //</editor-fold>
 }
